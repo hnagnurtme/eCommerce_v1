@@ -19,6 +19,8 @@
     "dotenv": "^16.5.0",
     "helmer": "^0.0.1",
     "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "lodash": "^4.17.21",
     "mongoose": "^8.15.2",
     "morgan": "^1.10.0"
   }

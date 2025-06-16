@@ -6,7 +6,7 @@ const createTokenPair = async ( payload , publicKey , privateKey) => {
             payload,
             privateKey,
             {
-                algorithm : 'RS256',
+                algorithm : 'HS256',
                 expiresIn :'2 days'
             }
         )
@@ -15,12 +15,12 @@ const createTokenPair = async ( payload , publicKey , privateKey) => {
             payload,
             privateKey,
             {
-                algorithm : 'RS256',
+                algorithm : 'HS256',
                 expiresIn :'7 days'
             }
         )
 
-        jwt.verify( accessToken, publicKey, (err,decode) => {
+        jwt.verify( accessToken, privateKey, (err,decode) => {
             if( err){
                 console.log('verify error', err)
             }

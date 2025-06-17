@@ -1,23 +1,38 @@
-const { token } = require('morgan')
-const keyTokenModel = require('../models/keyToken.model')
-
+const keyTokenModel = require('../models/keyToken.model');
+const { Types } = require('mongoose')
 class KeyTokenService {
-    static createKeyToken = async ({ userId, publicKey , privateKey}) => {
+    static createKeyToken = async ({ userId, publicKey, privateKey, refreshToken }) => {
         try {
-
-            const tokens = await keyTokenModel.create({
-                user: userId,
+            const filter = { user: userId };
+            const update = {
                 publicKey,
-                privateKey
-            })
+                privateKey,
+                refreshToken,
+                refreshTokenUsed: [],
+            };
+            const options = {
+                upsert: true, // ✅ sửa "upset" thành "upsert"
+                new: true,
+            };
 
-            return tokens ? tokens.publicKey : null
-            
+            const tokens = await keyTokenModel.findOneAndUpdate(filter, update, options);
+            return tokens ? tokens.publicKey : null;
         } catch (error) {
-            console.error('Error creating keyToken:', error)
-            return null
+            console.error('Error creating keyToken:', error);
+            return null;
         }
+    };
+
+    static findByUserId = async (userId) => {
+        return await keyTokenModel.findOne({ user: new Types.ObjectId(userId) }).lean();
     }
+
+    static removeKeyById = async (id) => {
+        return await keyTokenModel.deleteOne({ _id: id });
+    }
+
 }
 
-module.exports = KeyTokenService
+
+
+module.exports = KeyTokenService;

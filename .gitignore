@@ -14,7 +14,8 @@ logs/
 # OS generated files
 .DS_Store
 Thumbs.db
-
+#firebase
+src/firebase/serviceAccountKey.json
 # Editor directories and files
 .vscode/
 .idea/

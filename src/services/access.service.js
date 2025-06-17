@@ -17,49 +17,49 @@ const RoleShop = {
 class AccessService {
 
     /* 
-        check this token used
+        1.  check this token used
+        2.  neu da su dung roi, check xem la ai va xoa toan bo token nguoi do
+        3. neu khong , tao 1 cap AT, RT
+        4. Cap nhat token vao danh sach token da su dung
     */
-    static handleRefreshToken  = async ( refreshToken) =>{
+    static handleRefreshToken = async (refreshToken) => {
         if (!refreshToken) {
-            throw new NotFoundError('Refresh token non fourni')
+            throw new NotFoundError('Không tồn tại refresh token')
         }
-        
-        // Trouvez d'abord le token dans la base de données
-        const holderToken = await KeyTokenService.findByRefreshToken(refreshToken)
 
-        if (!holderToken) {
-            throw new NotFoundError('Refresh token introuvable')
-        }
-        
-        // Vérifiez si le token a déjà été utilisé
-        const foundToken = await KeyTokenService.findByRefreshTokenUsed(refreshToken)
-
-        if (foundToken) {
-            // Si le token a déjà été utilisé, supprimez-le et lancez une erreur
+        // Kiểm tra nếu refresh token đã từng được sử dụng (dấu hiệu bị tấn công)
+        const holderToken = await KeyTokenService.findByRefreshTokenUsed(refreshToken)
+        if (holderToken) {
             const { userId } = await verifyJWT(refreshToken, holderToken.privateKey)
             await KeyTokenService.deleteKeyByUserId(userId)
-            throw new ForBiddenError('Refresh token déjà utilisé')
+            throw new ForBiddenError('Refresh token đã bị sử dụng trước đó. Vui lòng đăng nhập lại.')
         }
-        
+
+        // Tìm refresh token hợp lệ
+        const foundToken = await KeyTokenService.findByRefreshToken(refreshToken)
+        if (!foundToken) {
+            throw new ForBiddenError('Refresh token không hợp lệ')
+        }
+
         try {
+            // Giải mã refresh token
+            const { userId, email } = await verifyJWT(refreshToken, foundToken.privateKey)
 
-            const { userId, email } = await verifyJWT(refreshToken, holderToken.privateKey)
-            
-
+            // Tìm người dùng theo email
             const foundShop = await findByEmail({ email })
             if (!foundShop) {
-                throw new NotFoundError('Utilisateur introuvable')
+                throw new NotFoundError('Không tìm thấy người dùng với email đã cung cấp')
             }
 
-
+            // Tạo cặp accessToken và refreshToken mới
             const tokens = await createTokenPair(
                 { userId, email },
-                holderToken.publicKey,
-                holderToken.privateKey
+                foundToken.publicKey,
+                foundToken.privateKey
             )
 
-
-            await KeyTokenService.updateKeyToken(holderToken._id, {
+            // Cập nhật refresh token mới và lưu lại token cũ vào danh sách đã sử dụng
+            await KeyTokenService.updateKeyToken(foundToken._id, {
                 refreshToken: tokens.refreshToken,
                 refreshTokenUsed: refreshToken
             })
@@ -69,14 +69,15 @@ class AccessService {
                 tokens
             }
         } catch (error) {
-            throw new ForBiddenError(`Erreur de vérification du token: ${error.message}`)
+            throw new ForBiddenError(`Lỗi xử lý refresh token: ${error.message}`)
         }
     }
+
 
     static logOut = async (keyStore) => {
         const delKey = await KeyTokenService.removeKeyById(keyStore._id)
 
-        console.log('delKey',delKey)
+        console.log('delKey', delKey)
 
         return delKey
     }
@@ -90,7 +91,7 @@ class AccessService {
 
     */
     static logIn = async ({ email, password, refreshToken = null }) => {
-        const foundShop = await findByEmail({ email }); 
+        const foundShop = await findByEmail({ email });
 
         if (!foundShop) {
             throw new NotFoundError('Không tìm thấy người dùng');

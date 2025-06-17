@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const { Schema, model } = mongoose;
 
 const DOCUMENT_NAME = 'Product';
-const COLLECTION_NAME = 'products';
+const COLLECTION_NAME = 'Products';
 
 const productSchema = new Schema({
   product_name: { type: String, required: true },
@@ -16,32 +16,40 @@ const productSchema = new Schema({
     enum: ['Clothing', 'Electronic'],
   },
   product_shop: { type: String },
+  product_attributes : {
+    type : Schema.Types.Mixed,
+    required : true,
+  }
 }, {
   timestamps: true,
   collection: COLLECTION_NAME,
-  discriminatorKey: 'product_type',
 });
-
-const Product = model(DOCUMENT_NAME, productSchema);
 
 // Clothing
 const clothingSchema = new Schema({
   brand: { type: String, required: true },
   size: String,
   material: String,
+}, {
+  timestamps: true,
+  collection: 'Clothings',
 });
 
-const Clothing = Product.discriminator('Clothing', clothingSchema);
 
-// Electronic
+
 const electronicSchema = new Schema({
   manufacturer: { type: String, required: true },
+  model : String,
+  color : String
+}, {
+  timestamps: true,
+  collection: 'Electronics',
 });
 
-const Electronic = Product.discriminator('Electronic', electronicSchema);
+
 
 module.exports = {
-  productModel : Product,
-  clothingModel : Clothing,
-  electronicModel :Electronic
+  productModel : model(DOCUMENT_NAME, productSchema),
+  clothingModel : model('Clothing', clothingSchema),
+  electronicModel :model('Electronic',electronicSchema)
 };

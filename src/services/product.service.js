@@ -26,35 +26,34 @@ class Product {
 class Clothing extends Product {
     
     async createProduct() {
-        // Pour le type Clothing, nous devons créer un document qui inclut à la fois
-        // les attributs communs du produit et les attributs spécifiques au vêtement
-        const newClothing = await clothingModel.create({
-            ...this,
-            ...this.product_attributes
-        });
-        
+        const newClothing = await clothingModel.create(this.product_attributes)
+ 
         if (!newClothing) {
             throw new NotFoundError('Lỗi tạo clothing')
         }
 
-        return newClothing;
+        const newProduct = await super.createProduct()
+        if (!newProduct) {
+            throw new NotFoundError('Lỗi tạo product')
+        }
+        return newProduct;
     }
 }
 
 class Electronic extends Product {
     async createProduct() {
-        // Pour le type Electronic, nous devons créer un document qui inclut à la fois
-        // les attributs communs du produit et les attributs spécifiques à l'électronique
-        const newElectronic = await electronicModel.create({
-            ...this,
-            ...this.product_attributes
-        });
+        
+        const newElectronic = await electronicModel.create(this.product_attributes)
         
         if (!newElectronic) {
             throw new NotFoundError('Lỗi tạo electronic')
         }
 
-        return newElectronic;
+        const newProduct = await super.createProduct()
+        if (!newProduct) {
+            throw new NotFoundError('Lỗi tạo product')
+        }
+        return newProduct;
     }
 }
 

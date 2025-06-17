@@ -2,11 +2,11 @@ const shopModel = require('../models/shop.model')
 const crypto = require('crypto')
 const bcrypt = require('bcrypt')
 const KeyTokenService = require('./keyToken.service')
-const { createTokenPair } = require('../auth/authUtils')
+const { createTokenPair, verifyJWT } = require('../auth/authUtils')
 const { type } = require('os')
 const { format } = require('path')
 const { getInfoData } = require('../utils')
-const { NotFoundError, ConflictError } = require('../core/error.respone')
+const { NotFoundError, ConflictError, ForBiddenError } = require('../core/error.respone')
 const { findByEmail } = require('./shop.service')
 const RoleShop = {
     SHOP: 'SHOP',
@@ -15,6 +15,63 @@ const RoleShop = {
     ADMIN: 'ADMIN',
 }
 class AccessService {
+
+    /* 
+        check this token used
+    */
+    static handleRefreshToken  = async ( refreshToken) =>{
+        if (!refreshToken) {
+            throw new NotFoundError('Refresh token non fourni')
+        }
+        
+        // Trouvez d'abord le token dans la base de données
+        const holderToken = await KeyTokenService.findByRefreshToken(refreshToken)
+
+        if (!holderToken) {
+            throw new NotFoundError('Refresh token introuvable')
+        }
+        
+        // Vérifiez si le token a déjà été utilisé
+        const foundToken = await KeyTokenService.findByRefreshTokenUsed(refreshToken)
+
+        if (foundToken) {
+            // Si le token a déjà été utilisé, supprimez-le et lancez une erreur
+            const { userId } = await verifyJWT(refreshToken, holderToken.privateKey)
+            await KeyTokenService.deleteKeyByUserId(userId)
+            throw new ForBiddenError('Refresh token déjà utilisé')
+        }
+        
+        try {
+
+            const { userId, email } = await verifyJWT(refreshToken, holderToken.privateKey)
+            
+
+            const foundShop = await findByEmail({ email })
+            if (!foundShop) {
+                throw new NotFoundError('Utilisateur introuvable')
+            }
+
+
+            const tokens = await createTokenPair(
+                { userId, email },
+                holderToken.publicKey,
+                holderToken.privateKey
+            )
+
+
+            await KeyTokenService.updateKeyToken(holderToken._id, {
+                refreshToken: tokens.refreshToken,
+                refreshTokenUsed: refreshToken
+            })
+
+            return {
+                user: { userId, email },
+                tokens
+            }
+        } catch (error) {
+            throw new ForBiddenError(`Erreur de vérification du token: ${error.message}`)
+        }
+    }
 
     static logOut = async (keyStore) => {
         const delKey = await KeyTokenService.removeKeyById(keyStore._id)
@@ -33,13 +90,13 @@ class AccessService {
 
     */
     static logIn = async ({ email, password, refreshToken = null }) => {
-        const foundShop = await findByEmail({ email }); // ✅ Đúng kiểu
+        const foundShop = await findByEmail({ email }); 
 
         if (!foundShop) {
             throw new NotFoundError('Không tìm thấy người dùng');
         }
 
-        const match = await bcrypt.compare(password, foundShop.password); // ✅ Thêm await
+        const match = await bcrypt.compare(password, foundShop.password);
 
         if (!match) {
             throw new ConflictError('Sai mật khẩu');
@@ -48,7 +105,7 @@ class AccessService {
         const privateKey = crypto.randomBytes(64).toString('hex');
         const publicKey = crypto.randomBytes(64).toString('hex');
 
-        // ✅ Tạo token
+
         const tokens = await createTokenPair(
             {
                 userId: foundShop._id,
@@ -58,7 +115,7 @@ class AccessService {
             privateKey
         );
 
-        // ✅ Lưu khóa vào DB
+
         await KeyTokenService.createKeyToken({
             userId: foundShop._id,
             refreshToken: tokens.refreshToken,

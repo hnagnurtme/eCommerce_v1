@@ -5,26 +5,26 @@
 # Content-Type: application/json
 # x-api-key: c13fe491b063a1971e8c7f9ea9dcceba53d47f17db27b91a94c53eb9e0e375d1cfbb99f4c84925b48a55a1b186279aa4ea472daca4e530311862d130869a2d1f
 
-# {
-#     "name" : "Nguyen Trung Anh",
-#     "email": "trunganh14@gmail.com",
-#     "password":"anh123"
-# }
+{
+    "name" : "Nguyen Trung Anh",
+    "email": "trunganh14@gmail.com",
+    "password":"anh123"
+}
 
 
-# POST {{url_dev}}/shop/login
-# Content-Type: application/json
-# x-api-key: c13fe491b063a1971e8c7f9ea9dcceba53d47f17db27b91a94c53eb9e0e375d1cfbb99f4c84925b48a55a1b186279aa4ea472daca4e530311862d130869a2d1f
-
-# {
-#     "email": "trunganh14@gmail.com",
-#     "password":"anh123"
-# }
-
-
-POST {{url_dev}}/shop/logout
+POST {{url_dev}}/shop/login
 Content-Type: application/json
 x-api-key: c13fe491b063a1971e8c7f9ea9dcceba53d47f17db27b91a94c53eb9e0e375d1cfbb99f4c84925b48a55a1b186279aa4ea472daca4e530311862d130869a2d1f
-x-client-id: 68500282c903edc741e2068c
-authorization : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODUwMDI4MmM5MDNlZGM3NDFlMjA2OGMiLCJlbWFpbCI6InRydW5nYW5oMTRAZ21haWwuY29tIiwiaWF0IjoxNzUwMTM4OTk4LCJleHAiOjE3NTAzMTE3OTh9.GZUGHMFo8DvOR3LmFbEdwqPttBPgHulcI-xfh9nD3ns
+
+{
+    "email": "trunganh14@gmail.com",
+    "password":"anh123"
+}
+
+
+# POST {{url_dev}}/shop/logout
+# Content-Type: application/json
+# x-api-key: c13fe491b063a1971e8c7f9ea9dcceba53d47f17db27b91a94c53eb9e0e375d1cfbb99f4c84925b48a55a1b186279aa4ea472daca4e530311862d130869a2d1f
+# x-client-id: 68500282c903edc741e2068c
+# authorization : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODUwMDI4MmM5MDNlZGM3NDFlMjA2OGMiLCJlbWFpbCI6InRydW5nYW5oMTRAZ21haWwuY29tIiwiaWF0IjoxNzUwMTM4OTk4LCJleHAiOjE3NTAzMTE3OTh9.GZUGHMFo8DvOR3LmFbEdwqPttBPgHulcI-xfh9nD3ns
 

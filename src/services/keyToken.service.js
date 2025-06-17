@@ -11,7 +11,7 @@ class KeyTokenService {
                 refreshTokenUsed: [],
             };
             const options = {
-                upsert: true, // ✅ sửa "upset" thành "upsert"
+                upsert: true,
                 new: true,
             };
 
@@ -31,8 +31,28 @@ class KeyTokenService {
         return await keyTokenModel.deleteOne({ _id: id });
     }
 
+    static findByRefreshTokenUsed = async (refreshToken) => {
+        return await keyTokenModel.findOne({ refreshTokenUsed: refreshToken }).lean()
+    }
+
+    static deleteKeyByUserId = async (userId) => {
+        return await keyTokenModel.findByIdAndDelete({ user: userId })
+    }
+
+    static findByRefreshToken = async (refreshToken) => {
+        return await keyTokenModel.findOne({ refreshToken }).lean()
+    }
+
+    static updateKeyToken = async (id, { refreshToken, refreshTokenUsed }) => {
+        return await keyTokenModel.findByIdAndUpdate(id, {
+            $set: {
+                refreshToken
+            },
+            $addToSet: {
+                refreshTokenUsed
+            }
+        }, { new: true })
+    }
 }
-
-
 
 module.exports = KeyTokenService;

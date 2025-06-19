@@ -1,4 +1,4 @@
-const ProductFactory = require("../services/product.service")
+const ProductFactory = require("../services/product.service.pattern")
 const { OK, CREATED} = require('../core/sucess.response')
 class ProductController {
     

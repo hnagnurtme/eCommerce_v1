@@ -7,10 +7,9 @@ const route = express.Router()
 
 route.post('/shop/signup', asyncHandle(accessController.signUp))
 route.post('/shop/login', asyncHandle(accessController.logIn))
-route.post('/shop/refreshToken', asyncHandle(accessController.handleRefreshToken))
 
 
 route.use(authenciation)
-
+route.post('/shop/refreshToken', asyncHandle(accessController.handleRefreshToken))
 route.post('/shop/logout', asyncHandle(accessController.logOut))
 module.exports = route

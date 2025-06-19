@@ -17,8 +17,11 @@ class Product {
         this.product_quantity = product_quantity
     }
 
-    async createProduct() {
-        return await productModel.create(this)
+    async createProduct(productId) {
+        return await productModel.create({
+            ...this,
+            _id : productId
+        })
     }
 }
 
@@ -26,8 +29,10 @@ class Product {
 class Clothing extends Product {
     
     async createProduct() {
-        const newClothing = await clothingModel.create(this.product_attributes)
- 
+        const newClothing = await clothingModel.create({
+            ...this.product_attributes,
+            product_shop :this.product_shop
+        })
         if (!newClothing) {
             throw new NotFoundError('Lỗi tạo clothing')
         }
@@ -43,7 +48,10 @@ class Clothing extends Product {
 class Electronic extends Product {
     async createProduct() {
         
-        const newElectronic = await electronicModel.create(this.product_attributes)
+        const newElectronic = await electronicModel.create({
+            ...this.product_attributes,
+            product_shop :this.product_shop
+        })
         
         if (!newElectronic) {
             throw new NotFoundError('Lỗi tạo electronic')

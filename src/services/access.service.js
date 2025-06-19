@@ -72,6 +72,42 @@ class AccessService {
     }
 
 
+    static handleRefreshTokenV2 = async ({ refreshToken, user, keyStore }) => {
+        const { userId, email } = user
+        if (keyStore.refreshTokenUsed.includes(refreshToken)) {
+            await KeyTokenService.deleteKeyByUserId(userId)
+            throw new ForBiddenError('Refresh token đã bị sử dụng trước đó. Vui lòng đăng nhập lại.')
+        }
+
+        if (keyStore.refreshToken !== refreshToken) {
+            throw new ForBiddenError('Refresh token không hợp lệ')
+        }
+
+
+        // Tìm người dùng theo email
+        const foundShop = await findByEmail({ email })
+        if (!foundShop) {
+            throw new NotFoundError('Không tìm thấy người dùng với email đã cung cấp')
+        }
+
+        // Tạo cặp accessToken và refreshToken mới
+        const tokens = await createTokenPair(
+            { userId, email },
+            keyStore.publicKey,
+            keyStore.privateKey
+        )
+        // Cập nhật refresh token mới và lưu lại token cũ vào danh sách đã sử dụng
+        await KeyTokenService.updateKeyToken(keyStore._id, {
+            refreshToken: tokens.refreshToken,
+            refreshTokenUsed: refreshToken
+        })
+
+        return {
+            user: { userId, email },
+            tokens
+        }
+    }
+
     static logOut = async (keyStore) => {
         const delKey = await KeyTokenService.removeKeyById(keyStore._id)
 

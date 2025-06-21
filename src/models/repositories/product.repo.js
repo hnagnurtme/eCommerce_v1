@@ -1,6 +1,6 @@
 const { productModel, electronicModel, furnitureModel, clothingModel } = require('../product.model')
 const { Types } = require('mongoose')
-
+const  {getSelectData} = require('../../utils/index')
 const findAllDraftedForShop = async ({ query, limit, skip }) => {
     return await queryProduct({ query, limit, skip })
 }
@@ -65,10 +65,69 @@ const searchProductByUser = async ({ keySearch, limit = 50, skip = 0 }) => {
     return result
 }
 
+const findAllProducts = async ({ limit, sort , page,filter,select }) =>{
+    const skip = (page - 1)* limit
+    const sortby = sort === 'ctime' ? { _id : -1} :{ _id : 1}
+    const products = await productModel.find(filter).sort(sortby).skip(skip).limit(limit).select(getSelectData(select)).lean()
+
+    return products
+}
+
+const createProduct = async (productData) => {
+    return await productModel.create(productData)
+}
+
+const createClothing = async (clothingData) => {
+    return await clothingModel.create(clothingData)
+}
+
+const createElectronic = async (electronicData) => {
+    return await electronicModel.create(electronicData)
+}
+
+const createFurniture = async (furnitureData) => {
+    return await furnitureModel.create(furnitureData)
+}
+
+const updateProductById = async (productId, dataUpdate) => {
+    return await productModel.findByIdAndUpdate(productId, dataUpdate, { new: true })
+}
+
+const updateClothingById = async (clothingId, dataUpdate) => {
+    return await clothingModel.findByIdAndUpdate(clothingId, dataUpdate, { new: true })
+}
+
+const updateElectronicById = async (electronicId, dataUpdate) => {
+    return await electronicModel.findByIdAndUpdate(electronicId, dataUpdate, { new: true })
+}
+
+const updateFurnitureById = async (furnitureId, dataUpdate) => {
+    return await furnitureModel.findByIdAndUpdate(furnitureId, dataUpdate, { new: true })
+}
+
+const findProductById = async (productId) => {
+    return await productModel.findById(productId).lean()
+}
+
+const deleteProductById = async (productId) => {
+    return await productModel.findByIdAndDelete(productId)
+}
+
 module.exports = {
     findAllDraftedForShop,
     publishProductByShop,
     unPublishProductByShop,
     findAllPublishedForShop,
-    searchProductByUser
+    searchProductByUser,
+    findAllProducts,
+    createProduct,
+    createClothing,
+    createElectronic,
+    createFurniture,
+    updateProductById,
+    updateClothingById,
+    updateElectronicById,
+    updateFurnitureById,
+    findProductById,
+    deleteProductById
 }

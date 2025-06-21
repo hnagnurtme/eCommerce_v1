@@ -1,4 +1,4 @@
-const ProductFactory = require("../services/product.service.pattern")
+const ProductFactory = require("../services/product.service")
 const { OK, CREATED} = require('../core/sucess.response')
 class ProductController {
     
@@ -22,11 +22,10 @@ class ProductController {
     }
 
 
-    getAllPublishForrShop = async(req, res, next) =>{
+    getAllPublishForShop = async(req, res, next) =>{
         return new OK({
             message : 'Fetch all publish product successfully',
             metadata : await ProductFactory.findAllPublishForShop({
-                product_id : req.params.id,
                 product_shop : req.user.userId
             })
         }).send(res)
@@ -58,6 +57,43 @@ class ProductController {
         }).send(res)
     }
 
+    findAllProduct = async(req, res, next) =>{
+        return new OK({
+            message : 'Search product successfully',
+            metadata : await ProductFactory.findAllProducts(req.query)
+        }).send(res)
+    }
+
+    // Phương thức mới: Cập nhật sản phẩm
+    updateProduct = async (req, res, next) => {
+        return new OK({
+            message: 'Update product successfully',
+            metadata: await ProductFactory.updateProduct(
+                req.body.product_type,
+                req.params.id,
+                {
+                    ...req.body,
+                    product_shop: req.user.userId
+                }
+            )
+        }).send(res)
+    }
+
+    // Phương thức mới: Xóa sản phẩm
+    deleteProduct = async (req, res, next) => {
+        return new OK({
+            message: 'Delete product successfully',
+            metadata: await ProductFactory.deleteProduct(req.params.id)
+        }).send(res)
+    }
+
+    // Phương thức mới: Lấy chi tiết sản phẩm theo ID
+    getProductById = async (req, res, next) => {
+        return new OK({
+            message: 'Get product detail successfully',
+            metadata: await ProductFactory.findProductById(req.params.id)
+        }).send(res)
+    }
 }
 
 module.exports = new ProductController()

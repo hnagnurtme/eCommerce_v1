@@ -18,8 +18,9 @@ class Database {
             maxPoolSize : 50
         }).then(_ => {
             console.log('Connect Mongoose Success With Instacne')
-        }).catch(_ => {
-            console.log('Connect Mongoose Failed')
+            console.log(`Connected to MongoDB at ${connectionString}`)
+        }).catch(err => {
+            console.error('Connect Mongoose Failed', err)
         })
 
     }

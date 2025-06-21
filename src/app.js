@@ -37,11 +37,12 @@ app.use((req , res, next) => {
 }) 
 
 app.use((err, req , res, next) => {
+    console.error('Error:', err);
     const statusCode = err.status || 500
     return res.status(statusCode).json({
         status : 'Error',
         code : statusCode,
-        stack : err.stack,
+        stack : process.env.NODE_ENV === 'dev' ? err.stack : '',
         message : err.message || ' Internal Server Error'
     })
 }) 

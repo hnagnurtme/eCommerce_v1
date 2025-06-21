@@ -1,0 +1,33 @@
+{
+  "name": "basiclearning",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "test": "mocha test/*.test.js",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "express": "^5.1.0",
+    "firebase": "^11.9.1"
+  },
+  "devDependencies": {
+    "axios": "^1.10.0",
+    "bcrypt": "^6.0.0",
+    "chai": "^5.2.0",
+    "compression": "^1.8.0",
+    "dotenv": "^16.5.0",
+    "helmer": "^0.0.1",
+    "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "lodash": "^4.17.21",
+    "mocha": "^11.7.0",
+    "mongoose": "^8.16.0",
+    "morgan": "^1.10.0",
+    "sinon": "^21.0.0",
+    "slugify": "^1.6.6"
+  }
+}

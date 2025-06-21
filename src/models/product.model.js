@@ -1,4 +1,3 @@
-const { findLastKey } = require('lodash');
 const slugify = require('slugify')
 const mongoose = require('mongoose');
 const { Schema, model } = mongoose;

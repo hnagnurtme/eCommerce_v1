@@ -21,6 +21,10 @@ const pro = {
         name: process.env.PRO_DB_NAME
     }
 }
-const config = { dev, pro }
+
+// Add development environment which maps to dev
+const development = dev;
+
+const config = { dev, pro, development }
 const env = process.env.NODE_ENV || 'dev'
 module.exports = config[env]

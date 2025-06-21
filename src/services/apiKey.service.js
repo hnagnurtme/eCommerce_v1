@@ -2,12 +2,6 @@ const apiKeyModel = require("../models/apiKey.model")
 const crypto = require('crypto')
 
 const findApiKeyById = async (key) =>{
-    // const newKey = await apiKeyModel.create({
-    //     key : crypto.randomBytes(64).toString('hex'),
-    //     permissions : ['0000']
-    // })
-
-    // console.log('Key', newKey)
     const objKey = await apiKeyModel.findOne({
         key,
         status : true
@@ -17,7 +11,16 @@ const findApiKeyById = async (key) =>{
     return objKey
 }
 
+// Function to create a new API key
+const createApiKey = async () => {
+    const newKey = await apiKeyModel.create({
+        key: crypto.randomBytes(32).toString('hex'),
+        permissions: ['0000', '1111', '2222']
+    })
+    return newKey
+}
 
 module.exports = {
-    findApiKeyById
+    findApiKeyById,
+    createApiKey
 }

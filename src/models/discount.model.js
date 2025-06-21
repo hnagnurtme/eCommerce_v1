@@ -1,4 +1,4 @@
-const { StringSchema } = require('firebase/ai');
+
 const { Schema, model } = require('mongoose')
 
 
@@ -80,4 +80,6 @@ var discountSchema = new mongoose.Schema({
 });
 
 //Export the model
-module.exports = mongoose.model(DOCUMENT_NAME, discountSchema);
+module.exports = {
+    discountModel : model(DOCUMENT_NAME, discountSchema)
+}

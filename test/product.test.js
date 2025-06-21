@@ -5,9 +5,11 @@ const { database } = require('../src/configs/config.mongodb');
 
 // Test configuration
 const API_URL = 'http://localhost:3056/v1/api';
-const API_KEY = 'f0418c2e0a4372a604776450b131062b04f046f00e39a2f44e894c3f730c309e'; // Replace with your API key
-const AUTH_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODUwMDI4MmM5MDNlZGM3NDFlMjA2OGMiLCJlbWFpbCI6InRydW5nYW5oMTRAZ21haWwuY29tIiwiaWF0IjoxNzUwNDk3NzM3LCJleHAiOjE3NTA2NzA1Mzd9.b7PJzSKXaksO56aJbuYW1E4BgQ6kS-9WixJyClMmZTA'; // Replace with a valid token
+const API_KEY = 'f0418c2e0a4372a604776450b131062b04f046f00e39a2f44e894c3f730c309e'; 
+
 const CLIENT_ID = '68500282c903edc741e2068c'; // Replace with your client ID
+// Replace with your API key
+const AUTH_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODUwMDI4MmM5MDNlZGM3NDFlMjA2OGMiLCJlbWFpbCI6InRydW5nYW5oMTRAZ21haWwuY29tIiwiaWF0IjoxNzUwNTAxMTIxLCJleHAiOjE3NTA2NzM5MjF9.5wPt9n61nOUoIv45sksdOmoOKcUxOwGalcQQhiygZzs'
 
 // Test data
 const productSamples = {

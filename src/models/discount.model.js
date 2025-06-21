@@ -6,7 +6,7 @@ const DOCUMENT_NAME = 'Discount';
 const COLLECTION_NAME = 'Discounts';
 
 // Declare the Schema of the Mongo model
-var discountSchema = new mongoose.Schema({
+var discountSchema = new Schema({
     discount_name :{
         type:String,
         required:true,

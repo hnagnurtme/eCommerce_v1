@@ -1,8 +1,12 @@
 const _ = require('lodash')
 const { Types } = require('mongoose')
 
-// Fix the ObjectId conversion to use the 'new' keyword
-const convertToObjectId = id => new Types.ObjectId(id)
+const convertToObjectId = (id) => {
+    if (!id || !Types.ObjectId.isValid(id)) {
+        throw new Error(`❌ Invalid ObjectId: ${JSON.stringify(id)}`);
+    }
+    return new Types.ObjectId(id);
+};
 
 const getInfoData = ({fields = [], object = {}}) => {
     return _.pick(object,fields)

@@ -231,7 +231,7 @@ class ProductFactory {
       sort,
       page,
       filter,
-      select: ["product_name"],
+      select: ["product_name",'product_price','product_thumb','product_shop'],
     });
   }
 

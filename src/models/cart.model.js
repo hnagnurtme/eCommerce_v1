@@ -22,12 +22,12 @@ const cartSchema = new Schema({
         default : 0
     },
     cart_userId : {
-        type : Types.ObjectId,
+        type : Number,
         required : true
     },
 },{
     collection : COLLECTION_NAME,
-    timeseries : {
+    timestamps : {
         createdAt : 'createdOn',
         updatedAt : 'modifiedOn'
     }

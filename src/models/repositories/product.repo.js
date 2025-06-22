@@ -113,6 +113,19 @@ const deleteProductById = async (productId) => {
     return await productModel.findByIdAndDelete(productId)
 }
 
+const checkProductServer = async (products) =>{
+    return await Promise.all(products.map( async product => {
+        const foundProduct = await findProductById(product.product_id)
+
+        if( foundProduct){
+            return {
+                price : foundProduct.product_price,
+                quantity : product.quantity,
+                productId : product.product_id
+            }
+        }
+    }))
+}
 module.exports = {
     findAllDraftedForShop,
     publishProductByShop,

@@ -113,18 +113,23 @@ const deleteProductById = async (productId) => {
     return await productModel.findByIdAndDelete(productId)
 }
 
-const checkProductServer = async (products) =>{
-    return await Promise.all(products.map( async product => {
-        const foundProduct = await findProductById(product.product_id)
+const checkProductServer = async (products) => {
+    const results = await Promise.all(products.map(async product => {
+        const foundProduct = await findProductById(product.product_id);
 
-        if( foundProduct){
+        if (foundProduct) {
             return {
-                price : foundProduct.product_price,
-                quantity : product.quantity,
-                productId : product.product_id
-            }
+                price: foundProduct.product_price,
+                quantity: product.quantity,
+                productId: product.product_id
+            };
         }
-    }))
+        // Optionally, throw an error if product not found
+        // throw new Error(`Product with id ${product.product_id} not found`);
+        return null;
+    }));
+    // Filter out null results (products not found)
+    return results.filter(item => item !== null);
 }
 module.exports = {
     findAllDraftedForShop,

@@ -1,5 +1,5 @@
-const { OK } = require("../core/sucess.response")
-const { checkoutReview } = require("../services/checkout.service")
+import { OK } from "../core/success.response.js";
+import { checkoutReview } from "../services/checkout.service.js";
 
 class CheckoutController {
     checkoutReview = async (req, res, next) => {
@@ -10,4 +10,4 @@ class CheckoutController {
     }
 }
 
-module.exports = new CheckoutController()
+export default new CheckoutController();

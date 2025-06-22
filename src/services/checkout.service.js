@@ -1,6 +1,7 @@
-const { NotFoundError } = require("../core/error.respone")
+const { NotFoundError } = require("../core/error.response")
 const { findCartById } = require("../models/repositories/cart.repo")
-const {getDiscountAmount } = require('../services/discount.service')
+const { getDiscountAmount } = require('../services/discount.service')
+const { checkProductServer } = require('../models/repositories/cart.repo')
 class CheckoutService {
     static async checkoutReview({
         cartId,userId,shop_order_ids
@@ -17,16 +18,16 @@ class CheckoutService {
             totalCheckout : 0
         }
 
-        shop_order_ids_new = []
+        let shop_order_ids_new = []
         for(let i = 0; i < shop_order_ids.length;i++){
             const { shopId,shop_discounts = [],item_products = []} = shop_order_ids[i]
 
-            const checkProductServer = await checkProductServer(item_products)
-            if(!checkProductServer[0] ){
+            const validatedProducts = await checkProductServer(item_products)
+            if(!validatedProducts[0] ){
                 throw new NotFoundError('Wrong')
             }
 
-            const checkoutPrice = checkProductServer.reduce((acc, product) =>{
+            const checkoutPrice = validatedProducts.reduce((acc, product) =>{
                 return acc + ( product.quantity * product.price) 
             },0)
 
@@ -39,10 +40,10 @@ class CheckoutService {
                 shop_discounts,
                 priceRaw :checkoutPrice,
                 priceApplyDiscount :checkoutPrice,
-                item_products : checkProductServer
+                item_products : validatedProducts
             }
 
-            if( shopDiscount.length >0){
+            if( shop_discounts.length >0){
                 const { totalPrice = 0,discount = 0} = await getDiscountAmount({
                     codeId: shop_discounts[0].codeId,
                     userId,

@@ -257,4 +257,4 @@ class DiscountService {
   }
 }
 
-module.exports =  DiscountService;
+module.exports = DiscountService;

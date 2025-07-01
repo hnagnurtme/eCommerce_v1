@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken')
 const asyncHandle = require('../helper/asyncHandle')
-const { NotFoundError } = require('../core/error.respone')
+const { NotFoundError } = require('../core/error.response')
 const { findByUserId } = require('../services/keyToken.service')
 const { token } = require('morgan')
 

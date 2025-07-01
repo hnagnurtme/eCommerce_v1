@@ -1,5 +1,5 @@
 const { isDate } = require("lodash");
-const { NotFoundError } = require("../core/error.respone");
+const { NotFoundError } = require("../core/error.response");
 const {
   findAllDraftedForShop,
   publishProductByShop,

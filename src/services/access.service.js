@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt')
 const KeyTokenService = require('./keyToken.service')
 const { createTokenPair, verifyJWT } = require('../auth/authUtils')
 const { getInfoData } = require('../utils')
-const { NotFoundError, ConflictError, ForBiddenError } = require('../core/error.respone')
+const { NotFoundError, ConflictError, ForBiddenError } = require('../core/error.response')
 const { findByEmail } = require('./shop.service')
 const RoleShop = {
     SHOP: 'SHOP',
@@ -184,19 +184,19 @@ class AccessService {
 
             if (newShop) {
                 // create privatekey , public key
-                // const { privateKey, publicKey } = crypto.generateKeyPairSync('rsa', {
-                //     modulusLength: 4096,
-                //     publicKeyEncoding:{
-                //         type : 'pkcs1',
-                //         format : 'pem'
-                //     },
-                //     privateKeyEncoding:{
-                //         type : 'pkcs1',
-                //         format : 'pem'
-                //     }
-                // })
-                const privateKey = crypto.randomBytes(64).toString('hex')
-                const publicKey = crypto.randomBytes(64).toString('hex')
+                const { privateKey, publicKey } = crypto.generateKeyPairSync('rsa', {
+                    modulusLength: 4096,
+                    publicKeyEncoding:{
+                        type : 'pkcs1',
+                        format : 'pem'
+                    },
+                    privateKeyEncoding:{
+                        type : 'pkcs1',
+                        format : 'pem'
+                    }
+                })
+                // const privateKey = crypto.randomBytes(64).toString('hex')
+                // const publicKey = crypto.randomBytes(64).toString('hex')
 
                 console.log({ privateKey, publicKey })
                 // save to database

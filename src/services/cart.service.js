@@ -11,7 +11,7 @@ const { throttle, update } = require("lodash");
 const {cartModel} = require("../models/cart.model");
 const { createUserCart, updateCartQuantity } = require("../models/repositories/cart.repo");
 const { findProductById } = require("../models/repositories/product.repo");
-const { NotFoundError } = require("../core/error.respone");
+const { NotFoundError } = require("../core/error.response");
 
 
 class CartService {

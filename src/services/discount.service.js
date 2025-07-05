@@ -8,7 +8,7 @@
     6- Cancel discount code [User]
 **/
 
-const { NotFoundError, BadRequestError } = require("../core/error.respone");
+const { NotFoundError, BadRequestError } = require("../core/error.response");
 const { discountModel } = require("../models/discount.model");
 const { convertToObjectId } = require("../utils");
 const { findAllProducts } = require("./product.service");

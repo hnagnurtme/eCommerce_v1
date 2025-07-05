@@ -2,6 +2,8 @@ const { NotFoundError } = require("../core/error.response")
 const { findCartById } = require("../models/repositories/cart.repo")
 const { getDiscountAmount } = require('../services/discount.service')
 const { checkProductServer } = require('../models/repositories/cart.repo')
+const { acquireLock, releaseLock } = require("./redis.service")
+const {orderModel } = require('../models/order.model')
 class CheckoutService {
     static async checkoutReview({
         cartId,userId,shop_order_ids
@@ -67,6 +69,52 @@ class CheckoutService {
             shop_order_ids,
             shop_order_ids_new,
             check_out_order
+        }
+
+    }
+
+
+    // order
+    static async orderByUSer({
+        shop_order_ids,
+        cartId,
+        userId,
+        user_address = {},
+        user_payment =  {}
+    }){
+        const { shop_order_ids_new , checkout_order} = await CheckoutService.checkoutReview({
+            cartId,
+            userId,shop_order_ids
+        })
+
+        const products = shop_order_ids_new.flatMap( order => order.item_products)
+        console.log(`[1] : `, products)
+
+        const acquireProduct = []
+        /// optimistes lock
+        for( let i =  0; i < products.length;i++){
+            const { productId, quantity} = products[i];
+            const keyLock = await acquireLock(productId,cartId,quantity)
+            acquireProduct.push(keyLock ? true : false)
+            if(keyLock){
+                await releaseLock(keyLock)
+            }
+        }
+
+        /// check false
+        if(acquireProduct.includes(false)){
+            throw new NotFoundError(' Loi het hang')
+        }
+
+        const newOrder = await orderModel.create({
+            order_userId : userId,
+            order_checkout : checkout_order,
+            order_shipping : user_address,
+            order_payment : user_payment,
+            order_products : shop_order_ids_new
+        })
+        if (newOrder){
+            
         }
 
     }
